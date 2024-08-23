@@ -42,4 +42,29 @@ public class ProcesadorComandos {
                 return "Comando no reconocido: " + comando;
         }
     }
+
+    private String cambiarDirectorio(String[] partesComando) {
+        if (partesComando.length < 2) {
+            return "Directorio no especificado.";
+        }
+        File dir = new File(directorioActual, partesComando[1]);
+        if (dir.exists() && dir.isDirectory()) {
+            directorioActual = dir;
+            gestorArchivos.setDirectorioActual(directorioActual);
+            return "Directorio actual: " + directorioActual.getAbsolutePath();
+        } else {
+            return "Directorio no encontrado: " + dir.getAbsolutePath();
+        }
+    }
+
+    private String regresarDirectorio() {
+        File directorioPadre = directorioActual.getParentFile();
+        if (directorioPadre != null) {
+            directorioActual = directorioPadre;
+            gestorArchivos.setDirectorioActual(directorioActual);
+            return "Directorio actual: " + directorioActual.getAbsolutePath();
+        } else {
+            return "No hay directorio superior.";
+        }
+    }
 }

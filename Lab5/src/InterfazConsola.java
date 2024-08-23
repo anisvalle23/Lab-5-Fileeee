@@ -16,7 +16,7 @@ public class InterfazConsola extends JFrame {
     public InterfazConsola() {
         procesadorComandos = new ProcesadorComandos();
 
-        setTitle("Administrador: COMMAND PROMPT ");
+        setTitle("ADMINISTRADOR: COMMAND PROMPT");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -40,7 +40,6 @@ public class InterfazConsola extends JFrame {
         doc.setDocumentFilter(new FiltroDocumentoNoEditable());
 
         salidaConsola.addKeyListener(new KeyAdapter() {
-            @Override
             public void keyTyped(KeyEvent e) {
                 if (e.getKeyChar() == KeyEvent.VK_ENTER) {
                     manejarPresionEnter();
@@ -49,7 +48,6 @@ public class InterfazConsola extends JFrame {
                 }
             }
 
-            @Override
             public void keyPressed(KeyEvent e) {
                 if (salidaConsola.getCaretPosition() < posicionUltimoComando) {
                     salidaConsola.setCaretPosition(salidaConsola.getDocument().getLength());
@@ -80,13 +78,32 @@ public class InterfazConsola extends JFrame {
 
     private void manejarTeclasFlecha(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-            // Simula el comando para regresar de carpeta
             String salida = procesadorComandos.procesarComando("..");
             salidaConsola.append("\n" + salida + "\n");
             prompt = procesadorComandos.obtenerDirectorioActual() + " % ";
             salidaConsola.append(prompt);
             posicionUltimoComando = salidaConsola.getDocument().getLength();
             salidaConsola.setCaretPosition(posicionUltimoComando);
+        }
+    }
+
+    private class FiltroDocumentoNoEditable extends DocumentFilter {
+        public void remove(DocumentFilter.FilterBypass fb, int offset, int length) throws BadLocationException {
+            if (offset >= posicionUltimoComando) {
+                super.remove(fb, offset, length);
+            }
+        }
+
+        public void insertString(DocumentFilter.FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+            if (offset >= posicionUltimoComando) {
+                super.insertString(fb, offset, string, attr);
+            }
+        }
+
+        public void replace(DocumentFilter.FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+            if (offset >= posicionUltimoComando) {
+                super.replace(fb, offset, length, text, attrs);
+            }
         }
     }
 }
